@@ -1,5 +1,5 @@
 #Importación de librerias
-
+import string
 
 
 #Declaración de variables
@@ -13,22 +13,26 @@ abecedario.append(".")
 abecedario.append(" ")
 
 #Relleno la lista de probabilidades
-prob = [j + 1 for j in range (len(abecedario))]
+prob = [((j + 1)/len(abecedario)) for j in range (len(abecedario))]
 
 #Defino funciones
 
 #Funcion que comprueba el numero actual del mensaje codfificado y añade la letra correspondiente al mensaje. Devuelve el intervalo.
 def devuelveCarac(n_codif):
 
+    listaProb = []
     #Bucle que comprueba a que letra pertenece el numero
     for i in range(0,len(abecedario)): 
 
         #Comprueba si la probabilidad es mayor y, por lo tanto, pertenece al intervalo
         if prob[i] > n_codif:
+            print("\n",prob[i])
 
             #Añade la letra a la variable donde almacenaremos la palabra decodificada y devuelve el intervalo
             palabra.join(abecedario[i])
-            return (prob[i], prob[i-1])
+            listaProb.append(prob[i])
+            listaProb.append(prob[i-1])
+            return listaProb
         
 
 #Funcion que actaliza el valor del numero para seguir obteniendo las letras de la palabra
@@ -38,10 +42,10 @@ def actualizaNum(n_codif, prob1, prob2):
     return numN
 
 
-#main
+#MAIN
 func = input("Introduce la función a realizar:")
 #Opcion decodificacion
-if func == 'd' | func == 'D':
+if func == 'd' or func == 'D':
 
     #Bucle que solicita al usuario la longitud. Comprueba que la longitud es valida y si no lo es pide el dato hasta que sea valida
     while l_palabra <= 0:
@@ -50,6 +54,7 @@ if func == 'd' | func == 'D':
             print("La longitud de la palabra debe de ser un número natural.")
 
     #Bucle que solicita al usuario el numero a decodificar. Comprueba que el valor es valido y si no lo solicita hasta que sea valido
+    n_codif = 0
     while n_codif <= 0:
         n_codif = int (input("Introduce el numero de la palabra a codifciar: "))
         if n_codif <= 0:
@@ -57,7 +62,9 @@ if func == 'd' | func == 'D':
 
     #Bucle que realizara la codificacion de la palabra dependiendo de la longitud dada de esta.
     for i in range (0, l_palabra):
-        n_codif = actualizaNum(n_codif, devuelveCarac(n_codif)[0], devuelveCarac(n_codif)[1])
+        val0 = devuelveCarac(n_codif)[0]
+        val1 = devuelveCarac(n_codif)[1]
+        n_codif = actualizaNum(n_codif, val0, val1)
     print(palabra)
 
 #Opcion codificacion
