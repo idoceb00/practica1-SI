@@ -1,49 +1,52 @@
 #Importación de librerias
-import string
-
-
+import fractions
+import decimal
 #Declaración de variables
-palabra = ""
 
 l_palabra = 0
-
 #Relleno la lista de caracteres
-abecedario = [chr(i) for i in range (101,133)]
-abecedario.append(".")
+abecedario = []
+for i in range(97,123):
+    abecedario.append(chr(i))
+    if i == 110:
+        abecedario.append(chr(164))
 abecedario.append(" ")
+abecedario.append(".")
 
 #Relleno la lista de probabilidades
-prob = [((j + 1)/len(abecedario)) for j in range (len(abecedario))]
+prob = [fractions.Fraction(numerator = j, denominator = len(abecedario)) for j in range (len(abecedario))]
 
 #Defino funciones
 
 #Funcion que comprueba el numero actual del mensaje codfificado y añade la letra correspondiente al mensaje. Devuelve el intervalo.
-def devuelveCarac(n_codif):
+def devuelveCarac(n_codif,palabra:list):
 
     listaProb = []
     #Bucle que comprueba a que letra pertenece el numero
     for i in range(0,len(abecedario)): 
-
         #Comprueba si la probabilidad es mayor y, por lo tanto, pertenece al intervalo
-        if prob[i] > n_codif:
-            print("\n",prob[i])
-
+        if prob[i + 1] > n_codif:
             #Añade la letra a la variable donde almacenaremos la palabra decodificada y devuelve el intervalo
-            palabra.join(abecedario[i])
+            palabra.append(abecedario[i])
+
             listaProb.append(prob[i])
-            listaProb.append(prob[i-1])
+            listaProb.append(prob[i+1])
+
             return listaProb
+        
+    return listaProb
         
 
 #Funcion que actaliza el valor del numero para seguir obteniendo las letras de la palabra
-def actualizaNum(n_codif, prob1, prob2):
+def actualizaNum(n_codif, prob1):
 
-    numN = (n_codif - prob1)/(prob2 - prob1)
+    numN = (fractions.Fraction(n_codif) - prob1)/fractions.Fraction(numerator = 1, denominator = 29)
     return numN
 
 
 #MAIN
 func = input("Introduce la función a realizar:")
+palabra = []
 #Opcion decodificacion
 if func == 'd' or func == 'D':
 
@@ -54,18 +57,16 @@ if func == 'd' or func == 'D':
             print("La longitud de la palabra debe de ser un número natural.")
 
     #Bucle que solicita al usuario el numero a decodificar. Comprueba que el valor es valido y si no lo solicita hasta que sea valido
-    n_codif = 0
-    while n_codif <= 0:
-        n_codif = int (input("Introduce el numero de la palabra a codifciar: "))
-        if n_codif <= 0:
-            print("El numero a decodificar debe de ser un número racional positivo.")
+    #n_codif = 0
+    #while n_codif <= 0:
+    n_codif = decimal.Decimal(0.419109252056655118764546349)
+        #if n_codif <= 0:
+            #print("El numero a decodificar debe de ser un número racional positivo.")
 
     #Bucle que realizara la codificacion de la palabra dependiendo de la longitud dada de esta.
     for i in range (0, l_palabra):
-        val0 = devuelveCarac(n_codif)[0]
-        val1 = devuelveCarac(n_codif)[1]
-        n_codif = actualizaNum(n_codif, val0, val1)
-    print(palabra)
+        n_codif = actualizaNum((n_codif), fractions.Fraction(devuelveCarac(n_codif,palabra)[0]))
+        print(palabra[i])
 
 #Opcion codificacion
 elif func == 'c' | func == 'C':
